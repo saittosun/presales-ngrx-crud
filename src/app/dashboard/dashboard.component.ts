@@ -14,11 +14,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   filteredCustomers: Customer[]
   private destroyed$ = new Subject<boolean>();
 
-  constructor(private store: CustomerFacade) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.store.getCustomers().subscribe(customers => this.customers = customers)
-    this.filteredCustomers = [...this.customers];
+    // this.store.getCustomers().subscribe(customers => this.customers = customers)
+    // this.filteredCustomers = [...this.customers];
   }
 
   searchThis(val: string): void {
