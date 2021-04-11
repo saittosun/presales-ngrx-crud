@@ -12,10 +12,10 @@ export class CustomersOverviewPageComponent implements OnInit {
   customers: Customer[];
   private destroyed$ = new Subject<boolean>();
 
-constructor(private store: CustomerFacade) { }
+constructor() { }
 
   ngOnInit(): void {
-    this.store.getCustomers().subscribe(customers => this.customers = customers)
+    // this.store.getCustomers().subscribe(customers => this.customers = customers)
   }
 
   ngOnDestroy(): void {

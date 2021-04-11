@@ -17,19 +17,18 @@ export class CustomerDetailPageComponent implements OnInit {
   customer: Customer;
   id: number;
 
-  constructor(private store: CustomerFacade,
-              private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               private router: Router) { }
 
   ngOnInit(): void {
-    combineLatest(
-      this.store.getCustomers(),
-      this.route.params
-    ).pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(([customers, params]) => {
-      this.store.findCustomer(params.id).subscribe(customer => this.customer = customer)
-    })
+    // combineLatest(
+    //   this.store.getCustomers(),
+    //   this.route.params
+    // ).pipe(
+    //   takeUntil(this.destroyed$)
+    // ).subscribe(([customers, params]) => {
+    //   this.store.findCustomer(params.id).subscribe(customer => this.customer = customer)
+    // })
   }
 
   onEdit() {

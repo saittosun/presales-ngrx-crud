@@ -1,6 +1,6 @@
+import { EffectsModule } from '@ngrx/effects';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SharedModule } from '~shared/shared.module';
 
@@ -12,11 +12,12 @@ import { CustomersOverviewPageComponent } from './pages/overview/customers.compo
 import { CustomerFacade } from './services/customer.facade';
 import { CustomerService } from './services/customer.service';
 import { CustomerEffects } from './store/customer.effects';
-import { customerReducers } from './store/customer.reducer';
+import { customerReducers } from './customerstore/customer.reducer';
 import { ProjectsOfCustomerComponent } from './pages/customer-detail/projects-of-customer/projects-of-customer.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import * as fromCustomer from './store/customer.reducer';
 
 @NgModule({
   imports: [
@@ -28,6 +29,8 @@ import { MatSortModule } from '@angular/material/sort';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    StoreModule.forFeature(fromCustomer.customersFeatureKey, fromCustomer.reducer),
+    EffectsModule.forFeature([CustomerEffects])
   ],
   declarations: [
     CustomerDetailPageComponent,
@@ -36,6 +39,6 @@ import { MatSortModule } from '@angular/material/sort';
     CustomersOverviewPageComponent,
     ProjectsOfCustomerComponent,
   ],
-  providers: [CustomerEffects, CustomerService, CustomerFacade]
+  providers: [CustomerService, CustomerFacade]
 })
 export class CustomersModule { }

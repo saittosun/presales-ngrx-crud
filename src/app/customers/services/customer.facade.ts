@@ -5,12 +5,12 @@ import { map } from 'rxjs/operators';
 
 import { Customer } from '~types/customer';
 
-import { setCustomers, updateCustomer, addCustomer } from '../store/customer.actions';
+import { setCustomers, updateCustomer, addCustomer } from '../customerstore/customer.actions';
 import {
   CUSTOMERS_ERROR,
   CUSTOMERS_LOADING
-} from '../store/customer.selectors';
-import { AppState } from '../store/customer.types';
+} from '../customerstore/customer.selectors';
+import { AppState } from '../customerstore/customer.types';
 
 @Injectable()
 export class CustomerFacade {

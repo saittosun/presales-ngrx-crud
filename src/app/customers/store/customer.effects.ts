@@ -1,62 +1,57 @@
 import { Router } from '@angular/router';
+import { CustomerService } from './../services/customer.service';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { of } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
-
-import { Customer } from "~types/customer";
-
-import { CustomerService } from "../services/customer.service";
-
-import { addCustomerFailed, addCustomerSuccess, getCustomersFailed, updateCustomerFailed, updateCustomerSuccess } from "./customer.actions";
-import { getCustomersSuccess } from "./customer.actions";
-import { CustomerActions } from "./customer.actions";
+import * as fromCustomerActions  from './customer.actions';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class CustomerEffects {
+  loadCustomers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromCustomerActions.loadCustomers),
+      mergeMap(action =>
+        this.customerService.fetchCustomers().pipe(
+          map(customers => fromCustomerActions.loadCustomersSuccess({customers})),
+          catchError(error =>
+            of(fromCustomerActions.loadCustomersFailure({error}))
+          )
+        )
+      )
+    )
+  );
+
+//   loadCustomer$ = createEffect(() =>
+//   this.actions$.pipe(
+//     ofType(fromCustomerActions.loadCustomer),
+//     mergeMap(action =>
+//       this.customerService.addCustomer.pipe(
+//         map(customer => fromCustomerActions.loadCustomerSuccess({customer})),
+//         catchError(error =>
+//           of(fromCustomerActions.loadCustomerFailure({error}))
+//         )
+//       )
+//     )
+//   )
+// );
+
+  createCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromCustomerActions.addCustomer),
+      mergeMap(action =>
+        this.customerService.addCustomer(action.customer).pipe(
+          map(customer => fromCustomerActions.addCustomerSuccess({customer})),
+          catchError(error =>
+            of(fromCustomerActions.addCustomerFailure({error}))
+          )
+        )
+      ),
+      tap(() => this.router.navigate(['../']))
+    )
+  );
+
   constructor(private actions$: Actions,
               private customerService: CustomerService,
-              private router: Router) { }
-
-  public getCustomers$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CustomerActions.getCustomers),
-      switchMap(() =>
-        this.customerService.fetchCustomers().pipe(
-          map((results: Customer[]) => getCustomersSuccess({ results })),
-          catchError((error: any) => of(getCustomersFailed({ error })))
-        )
-      )
-    )
-  );
-
-  public updateCustomer$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CustomerActions.updateCustomer),
-    switchMap(({customer, id}: {customer: Customer; id: number}) =>
-      this.customerService.updateCustomer(id, customer).pipe(
-        map((customer: Customer) => updateCustomerSuccess({ customer })),
-        tap(() => {
-          this.router.navigate(['customers/customer-detail', id])
-        }),
-        catchError((error: any) => of(updateCustomerFailed({ error })))
-        )
-      )
-    )
-  );
-
-  public addCustomer$ = createEffect(() =>
-   this.actions$.pipe(
-     ofType(CustomerActions.addCustomer),
-     switchMap(({customer}: {customer: Customer;}) =>
-      this.customerService.addCustomer(customer).pipe(
-        map((customer: Customer) => addCustomerSuccess({customer})),
-        tap(() => {
-          this.router.navigate(['customers/customer-detail'])
-        }),
-        catchError((error: any) => of(addCustomerFailed({error})))
-      )
-    )
-   )
-  )
+              private router: Router) {}
 }

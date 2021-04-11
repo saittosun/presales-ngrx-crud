@@ -1,93 +1,94 @@
-import { Action, createReducer, on } from "@ngrx/store";
+import { Action, createReducer, on } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import * as CustomerActions from './customer.actions';
+import { Customer } from '~types/customer';
 
-import { Customer } from "~types/customer";
-import {
-  addCustomerSuccess,
-  getCustomers,
-  getCustomersFailed,
-  getCustomersSuccess,
-  setCustomers,
-  updateCustomerSuccess
-} from "./customer.actions";
-import { CustomerListState } from "./customer.types";
+export const customersFeatureKey = 'customers';
 
-export const CUSTOMER_INITIAL_STATE: CustomerListState = {
-  results: [],
-  loading: false,
-  error: null
-};
-
-export const listReducer = createReducer(
-  CUSTOMER_INITIAL_STATE as any,
-  on(getCustomers, (actionState: CustomerListState) => ({
-    ...actionState,
-    loading: true,
-    error: null
-  })) as any,
-  on(
-    getCustomersSuccess,
-    (state: CustomerListState, { results }: any) => ({
-      ...state,
-      loading: false,
-      error: null
-    })
-  ) as any,
-  on(
-    getCustomersFailed,
-    (state: CustomerListState, { error }: any) => ({
-      ...state,
-      loading: false,
-      error
-    })
-  ) as any,
-  on(
-    updateCustomerSuccess,
-    (state: CustomerListState, { customer }: {customer: Customer}) => {
-      const customerIndex = state.results.findIndex(item => item.id === customer.id)
-      if (customerIndex === -1) {
-        return {
-          ...state,
-          results: state.results.concat(customer),
-          loading: false,
-          error: null
-        }
-      }
-      return  {
-        ...state,
-        results: [
-          ...state.results.slice(0, customerIndex),
-          customer,
-          ...state.results.slice(customerIndex + 1)
-        ],
-        loading: false,
-        error: null
-      }
-    }
-  ) as any,
-  on(
-    addCustomerSuccess,
-    (state: CustomerListState, { customer }: {customer: Customer}) => ({
-      ...state,
-      results: state.results.concat(customer),
-      loading: false,
-      error: null
-    })
-  ) as any,
-  on(
-    setCustomers,
-    (state: CustomerListState, { customers }: {customers: Customer[]}) => ({
-      ...state,
-      results: customers,
-      loading: false,
-      error: null
-    })
-  ) as any,
-);
-
-function listReducerWrapper(state: CustomerListState, action: Action) {
-  return listReducer(state, action);
+export interface CustomerState extends EntityState<Customer> {
+  selectedCustomer: Customer;
+  error: any;
 }
 
-export const customerReducers: any = {
-  list: listReducerWrapper
-};
+export const adapter: EntityAdapter<Customer> = createEntityAdapter<Customer>();
+
+export const initialState: CustomerState = adapter.getInitialState({
+  selectedCustomer: undefined,
+  error: undefined
+});
+
+export const reducer = createReducer(
+  initialState,
+  on(CustomerActions.addCustomerSuccess,
+    (state, action) => adapter.addOne(action.customer, state)
+  ),
+  on(CustomerActions.addCustomerFailure,
+    (state, action) => {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+  ),
+  on(CustomerActions.loadCustomersSuccess,
+    (state, action) => adapter.setAll(action.customers, state)
+  ),
+  on(CustomerActions.loadCustomersFailure,
+    (state, action) => {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+  ),
+  on(CustomerActions.loadCustomerSuccess,
+    (state, action) => {
+      return {
+        ...state,
+        selectedCustomer: action.selectedCustomer
+      }
+    }
+  ),
+  on(CustomerActions.loadCustomerFailure,
+    (state, action) => {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+  ),
+  on(CustomerActions.upsertCustomer,
+    (state, action) => adapter.upsertOne(action.customer, state)
+  ),
+  on(CustomerActions.upsertCustomers,
+    (state, action) => adapter.upsertMany(action.customers, state)
+  ),
+  on(CustomerActions.updateCustomer,
+    (state, action) => adapter.updateOne(action.customer, state)
+  ),
+  on(CustomerActions.updateCustomers,
+    (state, action) => adapter.updateMany(action.customers, state)
+  ),
+  on(CustomerActions.deleteCustomer,
+    (state, action) => adapter.removeOne(action.id, state)
+  ),
+  on(CustomerActions.deleteCustomers,
+    (state, action) => adapter.removeMany(action.ids, state)
+  ),
+
+  on(CustomerActions.clearCustomers,
+    state => adapter.removeAll(state)
+  ),
+);
+
+// export function reducer(state: CustomerState | undefined, action: Action) {
+//   return customerReducer(state, action)
+// }
+
+
+export const {
+  selectIds,
+  selectEntities,
+  selectAll,
+  selectTotal,
+} = adapter.getSelectors();

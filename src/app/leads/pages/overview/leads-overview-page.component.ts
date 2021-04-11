@@ -20,24 +20,23 @@ export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['project', 'customer', 'status', 'detail'];
 
-  constructor(private store: LeadFacade,
-              private leadService: LeadService) {
-    this.dataSource = new LeadsOverviewPageDataSource(store);
+  constructor() {
+    // this.dataSource = new LeadsOverviewPageDataSource(store);
   }
 
   ngOnInit(): void {
-    this.store.getLeads().subscribe(leads => {
-      if(leads.length === 0) {
-        this.leadService.fetchLeads().subscribe(leads => {
-          this.store.setLeads(leads);
-        })
-      }
-    })
+    // this.store.getLeads().subscribe(leads => {
+    //   if(leads.length === 0) {
+    //     this.leadService.fetchLeads().subscribe(leads => {
+    //       this.store.setLeads(leads);
+    //     })
+    //   }
+    // })
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
   }
 }

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 import { SharedModule } from '~shared/shared.module';
@@ -34,6 +33,6 @@ import { LeadsOverviewPageComponent } from './pages/overview/leads-overview-page
     LeadEditPageComponent,
     LeadsOverviewPageComponent,
   ],
-  providers: [LeadEffects, LeadService, LeadFacade]
+  providers: [LeadService, LeadFacade]
 })
 export class LeadsModule { }

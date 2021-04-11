@@ -1,3 +1,5 @@
+import { addCustomer } from './../../store/customer.actions';
+import { Store } from '@ngrx/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +10,7 @@ import { CustomerFacade } from '~customers/services/customer.facade';
 import { Countries } from '~types/countries';
 import { Country } from '~types/country';
 import { Customer } from '~types/customer';
+import { CustomerState } from '~customers/store/customer.reducer';
 
 @Component({
   selector: 'app-new-customer-form',
@@ -25,7 +28,7 @@ export class NewCustomerPageComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private store: CustomerFacade,
+              private store: Store<CustomerState>,
               private toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -88,8 +91,9 @@ export class NewCustomerPageComponent implements OnInit, OnDestroy {
         zip: this.leadForm.value.zip
       }
     }
-    this.store.addCustomer(customer);
-    this.router.navigate(['../customer-detail', customer.id], { relativeTo: this.route });
+    // this.store.addCustomer(customer);
+    this.store.dispatch(addCustomer({customer}))
+    // this.router.navigate(['../customer-detail', customer.id], { relativeTo: this.route });
     this.leadForm.reset();
     this.submitted = false;
   }
