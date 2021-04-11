@@ -57,27 +57,14 @@ export const reducer = createReducer(
       }
     }
   ),
-  on(CustomerActions.upsertCustomer,
-    (state, action) => adapter.upsertOne(action.customer, state)
-  ),
-  on(CustomerActions.upsertCustomers,
-    (state, action) => adapter.upsertMany(action.customers, state)
-  ),
   on(CustomerActions.updateCustomer,
     (state, action) => adapter.updateOne(action.customer, state)
-  ),
-  on(CustomerActions.updateCustomers,
-    (state, action) => adapter.updateMany(action.customers, state)
   ),
   on(CustomerActions.deleteCustomer,
     (state, action) => adapter.removeOne(action.id, state)
   ),
   on(CustomerActions.deleteCustomers,
     (state, action) => adapter.removeMany(action.ids, state)
-  ),
-
-  on(CustomerActions.clearCustomers,
-    state => adapter.removeAll(state)
   ),
 );
 

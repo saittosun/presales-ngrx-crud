@@ -107,8 +107,14 @@ export class CustomerService {
     ])
   }
 
-  updateCustomer(id: string, customer: Customer): Observable<Customer> {
-    return of({...customer, id})
+
+
+  // updateCustomer(id: string, customer: Customer): Observable<Customer> {
+  //   return of({...customer, id})
+  // }
+
+  updateCustomer(customerId: string | number, changes: Partial<Customer>){
+    return of({customerId, changes})
   }
 
   addCustomer(customer: Customer): Observable<Customer>{

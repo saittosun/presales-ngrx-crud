@@ -3,7 +3,7 @@ import { CustomerService } from './../services/customer.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Injectable } from "@angular/core";
 import * as fromCustomerActions  from './customer.actions';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Injectable()
@@ -49,6 +49,17 @@ export class CustomerEffects {
       ),
       tap(() => this.router.navigate(['../']))
     )
+  );
+
+  updateCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromCustomerActions.updateCustomer),
+      concatMap(action =>
+        this.customerService.updateCustomer(action.customer.id, action.customer.changes)
+      ),
+      tap(() => this.router.navigate(['../']))
+    ),
+    { dispatch: false}
   );
 
   constructor(private actions$: Actions,

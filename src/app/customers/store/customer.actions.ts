@@ -49,25 +49,10 @@ export const addCustomerFailure = createAction(
   props<{ error: any }>()
 );
 
-export const upsertCustomer = createAction(
-  '[Customer/API] Upsert Customer',
-  props<{ customer: Customer }>()
-);
-
-
-export const upsertCustomers = createAction(
-  '[Customer/API] Upsert Customers',
-  props<{ customers: Customer[] }>()
-);
-
+// edit component
 export const updateCustomer = createAction(
-  '[Customer/API] Update Customer',
+  '[Customer Edit Component] Update Customer',
   props<{ customer: Update<Customer> }>()
-);
-
-export const updateCustomers = createAction(
-  '[Customer/API] Update Customers',
-  props<{ customers: Update<Customer>[] }>()
 );
 
 export const deleteCustomer = createAction(
@@ -80,6 +65,3 @@ export const deleteCustomers = createAction(
   props<{ ids: string[] }>()
 );
 
-export const clearCustomers = createAction(
-  '[Customer/API] Clear Customers'
-);

@@ -1,3 +1,7 @@
+import { updateCustomer } from './../../store/customer.actions';
+import { selectedCustomer } from './../../store/customer.selectors';
+import { CustomerState } from '~customers/store/customer.reducer';
+import { Store, select } from '@ngrx/store';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +11,8 @@ import { CustomerFacade } from '~customers/services/customer.facade';
 import { Countries } from '~types/countries';
 import { Country } from '~types/country';
 import { Customer } from '~types/customer';
+import { loadCustomer } from '~customers/store/customer.actions';
+import { Update } from '@ngrx/entity';
 
 @Component({
   selector: 'app-customer-edit',
@@ -16,24 +22,32 @@ import { Customer } from '~types/customer';
 export class CustomerEditPageComponent implements OnInit {
   customers: Customer[];
   customer: Customer;
-  id: number;
+  id: string;
   leadForm: FormGroup;
   editted: boolean = false;
   countries: Country[] = new Countries().countries;
   private destroyed$ = new Subject<boolean>();
+  model: any = {}
 
   constructor(private route: ActivatedRoute,
-              private store: CustomerFacade) { }
+              private store: Store<CustomerState>) { }
 
   ngOnInit(): void {
-    combineLatest(
-      this.store.getCustomers(),
-      this.route.params
-    ).pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(([customers, params]) => {
-      this.store.findCustomer(params.id).subscribe(customer => this.customer = customer)
-    })
+    // combineLatest(
+    //   this.store.getCustomers(),
+    //   this.route.params
+    // ).pipe(
+    //   takeUntil(this.destroyed$)
+    // ).subscribe(([customers, params]) => {
+    //   this.store.findCustomer(params.id).subscribe(customer => this.customer = customer)
+    // })
+    this.store.dispatch(
+      loadCustomer({id: this.route.snapshot.paramMap.get('id')})
+    );
+
+    // this.store.pipe(select(selectedCustomer)).subscribe(customer => this.model = Object.assign(new Customer(), customer))
+    this.store.pipe(select(selectedCustomer)).subscribe(customer => this.customer = customer);
+    console.log(this.customer);
     this.createForm();
   }
 
@@ -68,6 +82,7 @@ export class CustomerEditPageComponent implements OnInit {
       alert('You must fill the required fields!')
       return;
     };
+
     this.customer = {
       customername: this.leadForm.value.customername,
       address : {
@@ -88,7 +103,14 @@ export class CustomerEditPageComponent implements OnInit {
       id: null,
       status: this.leadForm.value.status || 'pitch'
     }
-    this.store.updateCustomer(this.id, this.customer)
+    // this.store.updateCustomer(this.id, this.customer)
+    const update: Update<Customer> = {
+      id: this.model.id,
+      changes: this.model
+    }
+    console.log(update);
+    this.store.dispatch(updateCustomer({customer: update}))
+
     this.leadForm.reset()
     this.editted = false;
   }
