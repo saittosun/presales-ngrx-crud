@@ -22,19 +22,19 @@ export class CustomerEffects {
     )
   );
 
-//   loadCustomer$ = createEffect(() =>
-//   this.actions$.pipe(
-//     ofType(fromCustomerActions.loadCustomer),
-//     mergeMap(action =>
-//       this.customerService.addCustomer.pipe(
-//         map(customer => fromCustomerActions.loadCustomerSuccess({customer})),
-//         catchError(error =>
-//           of(fromCustomerActions.loadCustomerFailure({error}))
-//         )
-//       )
-//     )
-//   )
-// );
+  loadCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromCustomerActions.loadCustomer),
+      mergeMap(action =>
+        this.customerService.getCustomer(action.id).pipe(
+          map(customer => fromCustomerActions.loadCustomerSuccess({selectedCustomer: customer})),
+          catchError(error =>
+            of(fromCustomerActions.loadCustomerFailure({error}))
+          )
+        )
+      )
+    )
+  );
 
   createCustomer$ = createEffect(() =>
     this.actions$.pipe(

@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 
 import { Customer } from '~types/customer';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CustomerService {
   fetchCustomers(): Observable<Customer[]> {
     return of([
       {
-        id: 1,
+        id: "1",
         customername: '34bd4e53-029d-4743-831a-35efc0e003f4',
         projectname: 'renson',
         status: 'offer',
@@ -28,7 +29,7 @@ export class CustomerService {
         }
       },
       {
-        id: 2,
+        id: "2",
         customername: 'Digipolis Antwerpen',
         projectname: 'Antwerpen Morgen',
         status: 'offer',
@@ -47,7 +48,7 @@ export class CustomerService {
         }
       },
       {
-        id: 3,
+        id: "3",
         customername: 'Digipolis Antwerpen',
         projectname: 'Nova',
         status: 'BAFO',
@@ -66,7 +67,7 @@ export class CustomerService {
         }
       },
       {
-        id: 4,
+        id: "4",
         customername: '14bd4e53-029d-4743-831a-35efc0e003f4',
         projectname: 'Mono',
         status: 'offer',
@@ -85,7 +86,7 @@ export class CustomerService {
         }
       },
       {
-        id: 5,
+        id: "5",
         customername: '14bd4e53-029d-4743-831a-35efc0e003f4',
         projectname: 'presales',
         status: 'offer',
@@ -106,11 +107,15 @@ export class CustomerService {
     ])
   }
 
-  updateCustomer(id: number, customer: Customer): Observable<Customer> {
+  updateCustomer(id: string, customer: Customer): Observable<Customer> {
     return of({...customer, id})
   }
 
   addCustomer(customer: Customer): Observable<Customer>{
     return of({...customer})
+  }
+
+  getCustomer(id: string): Observable<Customer> {
+    return this.fetchCustomers().pipe(map(customers => customers.find(customer => customer.id === id )))
   }
 }

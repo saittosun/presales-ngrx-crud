@@ -32,19 +32,19 @@ export class ProjectsOfCustomerComponent implements OnInit {
               private leadFacade: LeadFacade) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
-      this.id = +params.id;
-    })
-    this.store.getCustomers().subscribe(customers => {
-      this.customers = customers
-    })
-    this.customer = this.customers.find(customer => customer.id === this.id)
-    for( const customer of this.customers) {
-      if (customer.customername === this.customer.customername) {
-        this.filteredCustomers.push(customer)
-      }
-      this.dataSource = new MatTableDataSource(this.filteredCustomers)
-    }
+    // this.route.params.subscribe((params: Params) => {
+    //   this.id = +params.id;
+    // })
+    // this.store.getCustomers().subscribe(customers => {
+    //   this.customers = customers
+    // })
+    // this.customer = this.customers.find(customer => customer.id === this.id)
+    // for( const customer of this.customers) {
+    //   if (customer.customername === this.customer.customername) {
+    //     this.filteredCustomers.push(customer)
+    //   }
+    //   this.dataSource = new MatTableDataSource(this.filteredCustomers)
+    // }
   }
 
   onHandleProject() {
