@@ -1,4 +1,4 @@
-import { Lead } from './../../types/lead';
+import { Lead } from '../../types/lead';
 
 import { LeadActions } from './lead.actions';
 

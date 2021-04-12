@@ -1,3 +1,6 @@
+import { loadLeads } from './../../store/lead.actions';
+import { LeadState } from './../../store/lead.reducer';
+import { select, Store } from '@ngrx/store';
 import { LeadFacade } from './../../services/lead.facade';
 import { Lead } from '~types/lead';
 import { DataSource } from '@angular/cdk/collections';
@@ -10,14 +13,17 @@ export class LeadsOverviewPageDataSource extends DataSource<Lead> {
   data: Lead[];
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
-  store: LeadFacade;
+  store: Store<LeadState>;
 
-  constructor(store: LeadFacade) {
+  constructor(store: Store<LeadState>) {
     super();
     this.store = store;
-    this.store.getLeads().subscribe(leads => {
-      this.data = leads;
-    })
+    this.store.dispatch(loadLeads())
+    this.loadLeads();
+  }
+
+  loadLeads() {
+    this.store.pipe(select(loadLeads))
   }
 
   connect(): Observable<Lead[]> {

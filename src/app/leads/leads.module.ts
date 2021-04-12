@@ -6,8 +6,7 @@ import { SharedModule } from '~shared/shared.module';
 import { LeadsRoutingModule } from './leads.routing';
 import { LeadService } from './services/lead.service';
 import { LeadFacade } from './services/lead.facade';
-import { LeadEffects } from './store/lead.effects';
-import { leadReducers } from './store/lead.reducer';
+import { leadReducers } from './leadstore/lead.reducer';
 import { LeadEditPageComponent } from './pages/lead-edit/lead-edit.component';
 import { NewLeadPageComponent } from './pages/new-lead-form/new-lead-form.component';
 import { LeadDetailPageComponent } from './pages/lead-detail/lead-detail.component';
@@ -15,6 +14,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { LeadsOverviewPageComponent } from './pages/overview/leads-overview-page.component';
+import * as fromLead from './store/lead.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { LeadEffects } from './store/lead.effects';
 
 @NgModule({
   imports: [
@@ -25,7 +27,9 @@ import { LeadsOverviewPageComponent } from './pages/overview/leads-overview-page
     SharedModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    StoreModule.forFeature(fromLead.leadsFeatureKey, fromLead.reducer),
+    EffectsModule.forFeature([LeadEffects])
   ],
   declarations: [
     LeadDetailPageComponent,

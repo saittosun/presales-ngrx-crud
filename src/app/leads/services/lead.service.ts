@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Lead } from '~types/lead';
 
@@ -86,6 +87,14 @@ export class LeadService {
         notes: "Notes field for further notes between people working on it"
       },
     ])
+  }
+
+  addLead(lead: Lead): Observable<Lead>{
+    return of({...lead})
+  }
+
+  getLead(id: string): Observable<Lead> {
+    return this.fetchLeads().pipe(map(customers => customers.find(customer => customer.id === id )))
   }
 
 }

@@ -1,3 +1,6 @@
+import { addLead } from './../../store/lead.actions';
+import { LeadState } from './../../store/lead.reducer';
+import { Store } from '@ngrx/store';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,25 +24,25 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<boolean>();
 
   constructor(private fb: FormBuilder,
-              private store: LeadFacade,
+              private store: Store<LeadState>,
               private router: Router,
               private route: ActivatedRoute,
               private leadService: LeadService) {}
 
   ngOnInit(): void {
-    this.store.getLeads().subscribe(leads => {
-      if(leads.length === 0) {
-        this.leadService.fetchLeads().subscribe(
-          leads => {
-            this.store.setLeads(leads);
-            console.log(leads);
-            this.leads = leads;
-          })
-      } else {
-        this.leads = leads
-      }
-      this.leads = leads
-    })
+    // this.store.getLeads().subscribe(leads => {
+    //   if(leads.length === 0) {
+    //     this.leadService.fetchLeads().subscribe(
+    //       leads => {
+    //         this.store.setLeads(leads);
+    //         console.log(leads);
+    //         this.leads = leads;
+    //       })
+    //   } else {
+    //     this.leads = leads
+    //   }
+    //   this.leads = leads
+    // })
     this.createLeadForm()
   }
 
@@ -51,7 +54,7 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
   private createLeadForm() {
     this.leadNewForm = this.fb.group({
       leadname: new FormControl('', Validators.required),
-      customer: new FormControl('', Validators.required),
+      customer: new FormControl(''),
       status: new FormControl('', Validators.required),
       description: new FormControl('')
     })
@@ -75,7 +78,8 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
       alert('You must fill the required fields!');
       return;
     }
-    this.router.navigate(['../lead-detail', lead.id], {relativeTo: this.route});
+    this.store.dispatch(addLead({lead}))
+    // this.router.navigate(['../lead-detail', lead.id], {relativeTo: this.route});
     this.leadNewForm.reset();
     this.submitted = false;
   }

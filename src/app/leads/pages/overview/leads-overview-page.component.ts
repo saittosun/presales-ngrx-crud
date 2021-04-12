@@ -1,3 +1,7 @@
+import { selectLeads } from './../../store/lead.selector';
+import { loadLeads } from './../../store/lead.actions';
+import { LeadState } from './../../store/lead.reducer';
+import { select, Store } from '@ngrx/store';
 import { Lead } from '~types/lead';
 import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -20,8 +24,8 @@ export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['project', 'customer', 'status', 'detail'];
 
-  constructor() {
-    // this.dataSource = new LeadsOverviewPageDataSource(store);
+  constructor(private store: Store<LeadState>) {
+    this.dataSource = new LeadsOverviewPageDataSource(store);
   }
 
   ngOnInit(): void {
@@ -32,11 +36,17 @@ export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
     //     })
     //   }
     // })
+    this.store.dispatch(loadLeads())
+    this.loadLeads();
+  }
+
+  loadLeads() {
+    this.store.pipe(select(selectLeads))
   }
 
   ngAfterViewInit(): void {
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // this.table.dataSource = this.dataSource;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
   }
 }
