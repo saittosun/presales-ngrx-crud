@@ -11,6 +11,7 @@ import { MatTable } from '@angular/material/table';
 import { LeadFacade } from '../../services/lead.facade';
 import { LeadService } from '../../services/lead.service';
 import { LeadsOverviewPageDataSource } from './leads-overview-page-datasource';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-leads-overview-page',
@@ -18,16 +19,16 @@ import { LeadsOverviewPageDataSource } from './leads-overview-page-datasource';
   styleUrls: ['./leads-overview-page.component.scss']
 })
 export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
-  // @ViewChild(MatPaginator) paginator!: MatPaginator;
-  // @ViewChild(MatSort) sort!: MatSort;
-  // @ViewChild(MatTable) table!: MatTable<Lead>;
-  // dataSource: LeadsOverviewPageDataSource;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatTable) table!: MatTable<Lead>;
+  dataSource: LeadsOverviewPageDataSource;
 
-  // displayedColumns = ['project', 'customer', 'status', 'detail'];
-  leads$: Observable<Lead[]>
+  displayedColumns = ['project', 'customer', 'status', 'detail'];
+  // leads$: Observable<Lead[]>
 
   constructor(private store: Store<LeadState>) {
-    // this.dataSource = new LeadsOverviewPageDataSource(store);
+    this.dataSource = new LeadsOverviewPageDataSource(store);
   }
 
   ngOnInit(): void {
@@ -38,17 +39,19 @@ export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
     //     })
     //   }
     // })
-    this.store.dispatch(loadLeads())
+    this.store.dispatch(loadLeads());
     this.loadLeads();
+    console.log(this.dataSource);
   }
 
   loadLeads() {
-    this.leads$ = this.store.pipe(select(selectLeads))
+    this.store.pipe(select(selectLeads))
+    // console.log(this.leads$);
   }
 
   ngAfterViewInit(): void {
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // this.table.dataSource = this.dataSource;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
   }
 }

@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
 
 export class LeadsOverviewPageDataSource extends DataSource<Lead> {
-  data: Lead[];
+  data: Lead[]
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
   store: Store<LeadState>;
@@ -30,7 +30,7 @@ export class LeadsOverviewPageDataSource extends DataSource<Lead> {
     if (this.paginator && this.sort) {
       return merge(observableOf(this.data), this.paginator.page, this.sort.sortChange)
         .pipe(map(() => {
-          return this.getPagedData(this.getSortedData([...this.data ]));
+          return this.getPagedData(this.getSortedData([...this.data]));
         }));
     } else {
       throw Error('Please set the paginator and sort on the data source before connecting.');

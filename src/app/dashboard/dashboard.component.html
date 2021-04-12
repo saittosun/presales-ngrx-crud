@@ -16,12 +16,12 @@
     </thead>
     <tbody>
       <tr
-        *ngFor="let customer of filteredCustomers"
-        routerLink="customers/customer-detail/{{customer.id}}">
-        <td>{{customer.projectname}}</td>
-        <td>{{customer.customername}}</td>
-        <td>{{customer.status}}</td>
-        <td>{{customer.date}}</td>
+        *ngFor="let lead of filteredCustomers"
+        routerLink="customers/customer-detail/{{lead.id}}">
+        <td>{{lead.name}}</td>
+        <td>{{lead.customer}}</td>
+        <td>{{lead.status}}</td>
+        <td>{{lead.date}}</td>
         <td><i class="fa fa-arrow-circle-right"></i></td>
       </tr>
     </tbody>

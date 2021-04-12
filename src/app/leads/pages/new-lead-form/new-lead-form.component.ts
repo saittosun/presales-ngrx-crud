@@ -36,31 +36,8 @@ export class NewLeadPageComponent implements OnInit {
               private leadService: LeadService) {}
 
   ngOnInit(): void {
-    // this.store.getLeads().pipe(take(1)).subscribe(leads => {
-    //   if(leads.length === 0) {
-    //     this.leadService.fetchLeads().subscribe(leads => {
-    //       this.store.setLeads(leads);
-    //       this.initilazie(leads);
-    //     })
-    //   } else {
-    //     this.initilazie(leads);
-    //   }
-    // });
-
-    // this.store.getLeads().subscribe(leads => this.leads = leads);
-    // console.log(this.leads);
-
-    // this.store.getLeads().pipe(takeUntil(this.destroyed$)).subscribe(leads => this.leads = leads)
-
     this.createLeadForm()
   }
-
-  // initilazie(leads) {
-  //   this.store.getLeads().subscribe(leads =>
-  //   this.leads = leads)
-  //   console.log(this.leads);
-  //   this.createLeadForm()
-  // }
 
 
   ngOnDestroy(): void {

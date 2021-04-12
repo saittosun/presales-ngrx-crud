@@ -1,4 +1,4 @@
-export interface Lead {
+export class Lead {
   id: string;
   name: string;
   reference?: string;

@@ -36,13 +36,6 @@ export class LeadDetailPageComponent implements OnInit, OnDestroy {
               private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    // this.route.params.subscribe((params: Params) => {
-    //   this.id = params.id;
-    // })
-    // this.store.getLeads().subscribe(leads => {
-    //   this.leads = leads
-    // })
-    // this.lead = this.leads.find(lead => lead.id === this.id),
     this.createStatusResolutionForm();
     this.store.dispatch(loadLead({id: this.route.snapshot.paramMap.get('id')}))
 
