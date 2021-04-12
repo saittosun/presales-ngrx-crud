@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { selectLeads } from './../../store/lead.selector';
 import { loadLeads } from './../../store/lead.actions';
 import { LeadState } from './../../store/lead.reducer';
@@ -17,15 +18,16 @@ import { LeadsOverviewPageDataSource } from './leads-overview-page-datasource';
   styleUrls: ['./leads-overview-page.component.scss']
 })
 export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<Lead>;
-  dataSource: LeadsOverviewPageDataSource;
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // @ViewChild(MatSort) sort!: MatSort;
+  // @ViewChild(MatTable) table!: MatTable<Lead>;
+  // dataSource: LeadsOverviewPageDataSource;
 
-  displayedColumns = ['project', 'customer', 'status', 'detail'];
+  // displayedColumns = ['project', 'customer', 'status', 'detail'];
+  leads$: Observable<Lead[]>
 
   constructor(private store: Store<LeadState>) {
-    this.dataSource = new LeadsOverviewPageDataSource(store);
+    // this.dataSource = new LeadsOverviewPageDataSource(store);
   }
 
   ngOnInit(): void {
@@ -41,12 +43,12 @@ export class LeadsOverviewPageComponent implements OnInit, AfterViewInit {
   }
 
   loadLeads() {
-    this.store.pipe(select(selectLeads))
+    this.leads$ = this.store.pipe(select(selectLeads))
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
   }
 }

@@ -1,12 +1,12 @@
 <div class="jumbotron container mt-5 offset-2 col-md-8">
-  <h1 class="display-4"><span>Project Name:</span>{{lead.name}}</h1>
+  <h1 class="display-4"><span>Project Name:</span>{{(lead$ | async).name}}</h1>
   <form>
     <div class="form-group row">
       <label class="col-sm-3 font-weight-bold col-form-label">Customer Name:</label>
       <div class="col-sm-8">
         <input type="text" readonly class="form-control-plaintext"
         (click)="onHandleCustomer()"
-        value="{{lead.customer}}">
+        value="{{(lead$ | async).customer}}">
       </div>
     </div>
     <div [formGroup]="statusResolutionForm">
@@ -34,7 +34,7 @@
     <div class="form-group row">
       <label class="col-sm-3 font-weight-bold col-form-label">Description:</label>
       <div class="col-sm-8">
-        <input type="text" readonly class="form-control-plaintext" value="{{lead.resolutionComment}}">
+        <input type="text" readonly class="form-control-plaintext" value="{{(lead$ | async).resolutionComment}}">
       </div>
     </div>
     <p class="lead font-weight-bold">Timeline:</p>

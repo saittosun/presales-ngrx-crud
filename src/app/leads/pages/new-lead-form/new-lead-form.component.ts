@@ -1,21 +1,27 @@
-import { addLead } from './../../store/lead.actions';
+import { addLead, loadLead } from './../../store/lead.actions';
 import { LeadState } from './../../store/lead.reducer';
-import { Store } from '@ngrx/store';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { take, takeUntil } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+import { LeadService } from './../../services/lead.service';
 import { v4 as uuidv4 } from 'uuid';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { Lead } from '~types/lead';
+import { Lead } from './../../../types/lead';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { combineLatest, Subject } from 'rxjs';
 import { LeadFacade } from '../../services/lead.facade';
-import { LeadService } from '../../services/lead.service';
+import { ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-new-lead-form',
   templateUrl: './new-lead-form.component.html',
   styleUrls: ['./new-lead-form.component.scss']
 })
-export class NewLeadPageComponent implements OnInit, OnDestroy {
+export class NewLeadPageComponent implements OnInit {
+  defaultStatus = '';
+  statusArray: string[] = environment.status;
+  resolutionArray: string[] = environment.resolution
   timelineData: string;
   leadNewForm: FormGroup;
   lead: Lead;
@@ -30,21 +36,32 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
               private leadService: LeadService) {}
 
   ngOnInit(): void {
-    // this.store.getLeads().subscribe(leads => {
+    // this.store.getLeads().pipe(take(1)).subscribe(leads => {
     //   if(leads.length === 0) {
-    //     this.leadService.fetchLeads().subscribe(
-    //       leads => {
-    //         this.store.setLeads(leads);
-    //         console.log(leads);
-    //         this.leads = leads;
-    //       })
+    //     this.leadService.fetchLeads().subscribe(leads => {
+    //       this.store.setLeads(leads);
+    //       this.initilazie(leads);
+    //     })
     //   } else {
-    //     this.leads = leads
+    //     this.initilazie(leads);
     //   }
-    //   this.leads = leads
-    // })
+    // });
+
+    // this.store.getLeads().subscribe(leads => this.leads = leads);
+    // console.log(this.leads);
+
+    // this.store.getLeads().pipe(takeUntil(this.destroyed$)).subscribe(leads => this.leads = leads)
+
     this.createLeadForm()
   }
+
+  // initilazie(leads) {
+  //   this.store.getLeads().subscribe(leads =>
+  //   this.leads = leads)
+  //   console.log(this.leads);
+  //   this.createLeadForm()
+  // }
+
 
   ngOnDestroy(): void {
     this.destroyed$.next(true);
@@ -54,14 +71,25 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
   private createLeadForm() {
     this.leadNewForm = this.fb.group({
       leadname: new FormControl('', Validators.required),
-      customer: new FormControl(''),
-      status: new FormControl('', Validators.required),
-      description: new FormControl('')
+      customer: new FormControl('', Validators.required),
+      status: new FormControl('lead', Validators.required),
+      pitchDate: new FormControl(''),
+      offerDate: new FormControl(''),
+      presantationDate: new FormControl(''),
+      bafoDate: new FormControl(''),
+      startDate: new FormControl(''),
+      resolution: new FormControl('ongoing', Validators.required),
+      resolutionComment: new FormControl(''),
+      notes: new FormControl(''),
     })
   }
 
   onStatusChange() {
-    this.timelineData = this.leadNewForm.value.status;
+    // this.timelineData = this.leadNewForm.value.status;
+  }
+
+  onResolutionChange() {
+    // this.timelineData = this.leadNewForm.value.resolution;
   }
 
   onSubmit() {
@@ -72,14 +100,21 @@ export class NewLeadPageComponent implements OnInit, OnDestroy {
       status: this.leadNewForm.value.status,
       resolution: this.leadNewForm.value.resolution,
       customer: this.leadNewForm.value.customer,
-      resolutionComment: this.leadNewForm.value.resolutionComment
+      resolutionComment: this.leadNewForm.value.resolutionComment,
+      pitchDate: this.leadNewForm.value.pitchDate,
+      offerDate: this.leadNewForm.value.offerDate,
+      offerPresentationDate: this.leadNewForm.value.presantationDate,
+      // bafoDate: this.leadNewForm.value.bafoDate,
+      // startDate: this.leadNewForm.value.startDate,
+      notes: this.leadNewForm.value.notes
     }
     if (this.leadNewForm.invalid) {
       alert('You must fill the required fields!');
       return;
     }
+
     this.store.dispatch(addLead({lead}))
-    // this.router.navigate(['../lead-detail', lead.id], {relativeTo: this.route});
+    this.router.navigate(['../lead-detail', lead.id], {relativeTo: this.route});
     this.leadNewForm.reset();
     this.submitted = false;
   }
